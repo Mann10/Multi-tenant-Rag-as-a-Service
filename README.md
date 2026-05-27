@@ -1,4 +1,4 @@
-# Multi-Tenant RAG as a Service
+# Multi-Tenant Agentic RAG as a Service
 
 A Python/FastAPI implementation of a multi-tenant Retrieval-Augmented Generation
 (RAG) system. The project is split into three services:
