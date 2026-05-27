@@ -181,13 +181,13 @@ PINECONE_REGION=us-east-1
 EMBEDDING_SERVICE_URL=http://localhost:8001
 
 # Local storage
-DATA_DIR=C:\personal\Multi-tenant-Rag-as-a-Service\data
+DATA_DIR=C:\Multi-tenant-Rag-as-a-Service\data
 OLLAMA_HOST=http://localhost:11434
 ```
 
 Notes:
 
-- `VALIDATION_MODEL` and `ANSWER_MODEL` are used by the retrieval service. If they
+- `VALIDATION_MODEL` and `RETRIEVAL_MODEL` are used by the retrieval service. If they
   are not set, both default to `ministral-3:latest`.
 - `DATA_DIR` defaults to `/data` in the code, so set it explicitly for local
   Windows development.
