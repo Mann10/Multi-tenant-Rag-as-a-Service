@@ -12,76 +12,8 @@ A Python/FastAPI implementation of a multi-tenant Retrieval-Augmented Generation
 
 ## Architecture
 
-```text
-data/{tenant_id}/raw
-        |
-        v
-Ingestion Service :8000
-  - PDF/DOCX/TXT/image parsing
-  - image extraction + OCR
-  - recursive or semantic chunking
-        |
-        v
-Embedding Service :8001
-  - Voyage AI embeddings
-  - Pinecone upsert/query
-        |
-        v
-Pinecone index
-  - namespace = tenant_id
-        ^
-        |
-Retrieval Service :8002
-  - query validation
-  - vector retrieval
-  - LLM answer generation
-```
+<img width="1935" height="1105" alt="Multitenatrag" src="https://github.com/user-attachments/assets/ce5a8b26-ff9e-4588-841a-27f219778c73" />
 
-```mermaid
-flowchart LR
-    User["User / Client"]
-    TenantRaw["data/{tenant_id}/raw"]
-    TenantProcessed["data/{tenant_id}/processed"]
-    Ingestion["Ingestion Service\nFastAPI :8000"]
-    Parser["Document Parser\nPDF / DOCX / TXT / Image"]
-    OCR["OCR\nOllama glm-ocr"]
-    Chunker["Chunker\nRecursive / Semantic"]
-    Embedding["Embedding Service\nFastAPI :8001"]
-    Voyage["Voyage AI\nvoyage-3.5"]
-    Pinecone["Pinecone Index\nnamespace = tenant_id"]
-    Retrieval["Retrieval Service\nFastAPI :8002"]
-    Validator["Query Validator\nLLM"]
-    AnswerLLM["Answer Generator\nLLM"]
-    IngestionDB["ingestion.db\nSQLite"]
-    RetrievalDB["retrieval.db\nSQLite"]
-
-    User -->|Place files| TenantRaw
-    User -->|POST /ingest/{tenant_id}| Ingestion
-    Ingestion --> IngestionDB
-    Ingestion --> TenantRaw
-    Ingestion --> Parser
-    Parser --> OCR
-    Parser --> Chunker
-    OCR --> Chunker
-    Chunker -->|POST /embed| Embedding
-    Embedding --> Voyage
-    Voyage --> Embedding
-    Embedding -->|Upsert vectors| Pinecone
-    Ingestion -->|Move processed files| TenantProcessed
-
-    User -->|POST /query/{tenant_id}| Retrieval
-    Retrieval --> RetrievalDB
-    Retrieval --> Validator
-    Validator -->|Validated| Embedding
-    Validator -->|Needs clarification| User
-    Embedding -->|Embed query| Voyage
-    Embedding -->|Query namespace| Pinecone
-    Pinecone --> Embedding
-    Embedding --> Retrieval
-    Retrieval --> AnswerLLM
-    AnswerLLM --> Retrieval
-    Retrieval -->|Answer + sources| User
-```
 
 ## Ingestion Flow
 
